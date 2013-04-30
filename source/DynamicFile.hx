@@ -18,7 +18,6 @@ import org.flixel.FlxPoint;
 import org.flixel.FlxSprite;
 import org.flixel.FlxGroup;
 import org.flixel.FlxObject;
- 
 
 class DynamicFile extends FlxObject
 {	private var contents: String;
@@ -29,39 +28,27 @@ class DynamicFile extends FlxObject
 	public function hasContent():Bool
 	{    return contents != null;	}
 
-	public function new(anUrl:String, ?interval:Null<Int>)
+	public function new(aUrl:String)
 	{   super();
 		
 		contents = null;
 		
-		if (interval != null)
-		
-		{	refreshTimer = new Timer(interval);
-			refreshTimer.addEventListener(TimerEvent.TIMER, onTimeChange);
-			refreshTimer.start();
-		}
-		
-		urlToLoad = anUrl;
+		urlToLoad = aUrl;
 		
 		downloadFileAtUrl();
 		
 	}
 
-
 	private function downloadFileAtUrl()
 	{	loadFile(urlToLoad);	}
 
-	private function onTimeChange(event : TimerEvent) : Void 
-	{	downloadFileAtUrl();	}
-
-	private function loadFile(anUrl:String)
+	private function loadFile(aUrl:String)
 	{	try 
-		{
-			var request:URLRequest = new URLRequest(anUrl);
+		{	var request:URLRequest = new URLRequest(aUrl);
 			
 			var loader = new URLLoader();
 			
-			loader.dataFormat = URLLoaderDataFormat.BINARY;        
+			loader.dataFormat = URLLoaderDataFormat.TEXT;        
 			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			//loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);
@@ -69,17 +56,15 @@ class DynamicFile extends FlxObject
 		}
 			
 		catch (unknown : Dynamic) 
-		{	trace("Unknown exception : "+Std.string(unknown));	}
+		{	trace("Unknown exception: "+Std.string(unknown));	}
 
 	}
 
 	function errorHandler(event:IOErrorEvent)
-	{	trace("Couldnt download file... ERROR:" + urlToLoad);	}
+	{	trace("Couldnt download file... ERROR: " + urlToLoad);	}
 
 	private function loaderCompleteHandlerBytes(data:ByteArray):Void 
-	{	
-		contents = data + ''; 
-		
+	{	contents = data + ''; 
 		loaderCompleteHandlerString(contents);
 	}
 
