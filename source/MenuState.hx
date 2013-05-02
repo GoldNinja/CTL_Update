@@ -33,13 +33,13 @@ class MenuState extends FlxState
 	private var _timer:Float = 3;
 	private var check_finished:Bool = false;
 	
+	private var OK_Timer:Float = 0.2;
+	private var OK_Timer_Switch:Bool = false;
 	
 	private var fNameLocalVersion:String;
 	
-	private var localVer:String;
-	private var serverVer:String;
-	private var localVerNum:Float;
-	private var serverVerNum:Float;
+	public var localVer:String;
+	public var serverVer:String;
 	
 	
 	override public function create():Void
@@ -66,23 +66,15 @@ class MenuState extends FlxState
 		txtChecking.color = 0xff005ebd;
 		add(txtChecking);
 		
-		
 		//---------------------------------------------------------------------------Buttons
 		OK_Button = new FlxButton(100, 100, "Get Update", do_update);
+		OK_Button.active = false;
 		add(OK_Button);
 		CANCEL_Button = new FlxButton(200, 100, "Cancel", do_cancel);
 		add(CANCEL_Button);
 		
-		
 		//fName = "c:/estimation/version.txt";
 		fNameLocalVersion = "version.txt";
-		
-		/*			WRITING TO FILE
-		var fout = File.write(fName, false);
-		
-		fout.writeString("Joel");
-		fout.close();
-		*/
 		
 		// Reading file
 		var fout = File.write(fNameLocalVersion, false);
@@ -98,39 +90,45 @@ class MenuState extends FlxState
 		
 		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/version.txt", false);
 		
-		
 	}
 	
 	override public function update():Void
 	{	if (!check_finished)
 		{	_timer -= FlxG.elapsed;	}
 		
-		
 		if (_timer < 0 && !check_finished)
 		{	check_finished = true;
+			
+			OK_Button.active = true;
+			
 			var S_fileContent = File.getContent("S_version.txt");
 			serverVer = S_fileContent;
 			txtServerVer.text += S_fileContent;
 			txtChecking.visible = false;
 		}
 		super.update();
+		
+		if (OK_Timer_Switch)
+		{	OK_Timer -= FlxG.elapsed;	}
+		
+		if (OK_Timer < 0)
+		{	OK_Button.active = false;	}
+		
+		
 	}
-	
-	
 	
 	override public function destroy():Void
 	{	super.destroy();	}
 
 	private function do_update():Void
-	{	//Delete the old one, get the new one.
-		
-		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20TEST.xlsm", true);
-		
+	{	OK_Timer_Switch = true;
+	
+		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20Beta%20130425.xlsm", true);
 		
 		update_complete();
 	}
 	
-	private function do_cancel():Void			//Quits
+	private function do_cancel():Void						//Quit
 	{	Lib.exit();	}
 	
 	private function update_complete():Void
