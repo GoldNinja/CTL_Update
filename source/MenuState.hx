@@ -1,5 +1,6 @@
 package;
 
+import nme.Lib;
 import nme.Assets;
 import nme.geom.Rectangle;
 import nme.net.SharedObject;
@@ -8,6 +9,7 @@ import sys.io.File;
 import cpp.Lib;
 
 import Std;
+
 
 
 import org.flixel.FlxButton;
@@ -26,11 +28,16 @@ class MenuState extends FlxState
 	private var txtUpdate:FlxText;
 	private var txtLocalVer:FlxText;
 	private var txtServerVer:FlxText;
+	private var txtChecking:FlxText;
+	
+	private var _timer:Float = 3;
+	private var check_finished:Bool = false;
+	
 	
 	private var fNameLocalVersion:String;
 	
 	private var localVer:String;
-	private var serverVer:DynamicFile;
+	private var serverVer:String;
 	private var localVerNum:Float;
 	private var serverVerNum:Float;
 	
@@ -54,6 +61,11 @@ class MenuState extends FlxState
 		txtLocalVer.color = txtServerVer.color = 0xff005ebd;
 		add(txtLocalVer);
 		add(txtServerVer);
+		
+		txtChecking = new FlxText(150, 250, 100, "CHECKING SERVER", 8);
+		txtChecking.color = 0xff005ebd;
+		add(txtChecking);
+		
 		
 		//---------------------------------------------------------------------------Buttons
 		OK_Button = new FlxButton(100, 100, "Get Update", do_update);
@@ -84,32 +96,50 @@ class MenuState extends FlxState
 		
 		txtLocalVer.text += fileContent;
 		
-		serverVer = new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/version.txt");
+		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/version.txt", false);
 		
-		txtServerVer.text += serverVer.toString;
 		
 	}
+	
+	override public function update():Void
+	{	if (!check_finished)
+		{	_timer -= FlxG.elapsed;	}
+		
+		
+		if (_timer < 0 && !check_finished)
+		{	check_finished = true;
+			var S_fileContent = File.getContent("S_version.txt");
+			serverVer = S_fileContent;
+			txtServerVer.text += S_fileContent;
+			txtChecking.visible = false;
+		}
+		super.update();
+	}
+	
+	
 	
 	override public function destroy():Void
 	{	super.destroy();	}
 
-	override public function update():Void
-	{	super.update();	}
-	
 	private function do_update():Void
-	{	var fout = File.write(fNameLocalVersion, false);
+	{	//Delete the old one, get the new one.
 		
-		fout.writeString(txtLocalVer.text);
-		fout.close();
+		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20TEST.xlsm", true);
 		
+		
+		update_complete();
 	}
 	
-	private function do_cancel():Void
+	private function do_cancel():Void			//Quits
+	{	Lib.exit();	}
+	
+	private function update_complete():Void
 	{
-		
+		var fout = File.write(fNameLocalVersion, false);
+		localVer = serverVer;
+		fout.writeString(localVer);
+		fout.close();
 	}
-	
-	
 	
 }
 

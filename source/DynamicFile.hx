@@ -13,42 +13,34 @@ import nme.display.Loader;
 import nme.net.URLRequest;
 import nme.net.URLLoaderDataFormat;
 import nme.utils.ByteArray;
-import org.flixel.FlxG;
-import org.flixel.FlxPoint;
-import org.flixel.FlxSprite;
-import org.flixel.FlxGroup;
-import org.flixel.FlxObject;
 
-class DynamicFile extends FlxObject
+class DynamicFile
 {	private var contents: String;
 	public var urlToLoad: String;
-	private var refreshTimer : Timer;
 	public var onComplete:Dynamic = null;
+	private var downloadType:Bool;
+	
 
-	public function hasContent():Bool
-	{    return contents != null;	}
-
-	public function new(aUrl:String)
-	{   super();
+	public function new(aUrl:String, _type:Bool)
+	{   contents = null;
 		
-		contents = null;
+		downloadType = _type;
 		
 		urlToLoad = aUrl;
 		
-		downloadFileAtUrl();
-		
+		//downloadFileAtUrl();
+		loadFile(urlToLoad);
 	}
 
-	private function downloadFileAtUrl()
+	private function downloadFileAtUrl()			//Not used  ========================
 	{	loadFile(urlToLoad);	}
 
 	private function loadFile(aUrl:String)
 	{	try 
 		{	var request:URLRequest = new URLRequest(aUrl);
-			
 			var loader = new URLLoader();
 			
-			loader.dataFormat = URLLoaderDataFormat.TEXT;        
+			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			//loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);
@@ -56,16 +48,25 @@ class DynamicFile extends FlxObject
 		}
 			
 		catch (unknown : Dynamic) 
-		{	trace("Unknown exception: "+Std.string(unknown));	}
-
+		{	trace("Unknown exception: " + Std.string(unknown));	}
+		
 	}
 
 	function errorHandler(event:IOErrorEvent)
 	{	trace("Couldnt download file... ERROR: " + urlToLoad);	}
 
 	private function loaderCompleteHandlerBytes(data:ByteArray):Void 
-	{	contents = data + ''; 
-		loaderCompleteHandlerString(contents);
+	{	
+		if (downloadType == false)
+		{	contents = data + ''; 
+			data.writeFile("S_version.txt");
+			loaderCompleteHandlerString(contents);
+		}
+		else
+		{	contents = data + ''; 
+			data.writeFile("Estimation Test.xlsm");
+			loaderCompleteHandlerString(contents);
+		}
 	}
 
 	private function loaderCompleteHandlerString(data:String):Void 
