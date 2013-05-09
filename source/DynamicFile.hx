@@ -65,7 +65,7 @@ class DynamicFile
 		}
 		else
 		{	contents = data + '';
-			data.writeFile("Estimation Test.xlsm");
+			data.writeFile("Estimation Package.xlsm");
 			MenuState.download_Finished = true;
 			//loaderCompleteHandlerString(contents);
 		}

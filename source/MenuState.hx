@@ -54,7 +54,7 @@ class MenuState extends FlxState
 		
 		//---------------------------------------------------------------------------Title
 		Title_Est = new FlxSprite(272, 19, "assets/sprites/Title_Est.png");
-		Title_Upd = new FlxSprite(401, 55, "assets/sprites/Title_Upd.png");
+		Title_Upd = new FlxSprite(368, 55, "assets/sprites/Title_Upd.png");
 		add(Title_Est);
 		add(Title_Upd);
 		
@@ -181,7 +181,7 @@ class MenuState extends FlxState
 		txtDownloading.visible = true;
 		loading_anim.visible = true;
 		
-		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20TEST.xlsm", true);
+		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20Package.xlsm", true);
 		
 	}
 	
