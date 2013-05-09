@@ -28,7 +28,6 @@ class DynamicFile
 		
 		urlToLoad = aUrl;
 		
-		//downloadFileAtUrl();
 		loadFile(urlToLoad);
 	}
 
@@ -36,7 +35,7 @@ class DynamicFile
 	{	loadFile(urlToLoad);	}
 
 	private function loadFile(aUrl:String)
-	{	try 
+	{	try
 		{	var request:URLRequest = new URLRequest(aUrl);
 			var loader = new URLLoader();
 			
@@ -47,35 +46,39 @@ class DynamicFile
 			loader.load(request);
 		}
 			
-		catch (unknown : Dynamic) 
-		{	trace("Unknown exception: " + Std.string(unknown));	}
+		catch (unknown : Dynamic)
+		{	trace("Unknown exception: " + Std.string(unknown));
+			MenuState.an_error = true; }
 		
 	}
 
 	function errorHandler(event:IOErrorEvent)
-	{	trace("Couldnt download file... ERROR: " + urlToLoad);	}
+	{	trace("Couldnt download file... ERROR: " + urlToLoad);
+		MenuState.an_error = true;	}
 
-	private function loaderCompleteHandlerBytes(data:ByteArray):Void 
+	private function loaderCompleteHandlerBytes(data:ByteArray):Void
 	{	
 		if (downloadType == false)
-		{	contents = data + ''; 
+		{	contents = data + '';
 			data.writeFile("S_version.txt");
 			loaderCompleteHandlerString(contents);
 		}
 		else
-		{	contents = data + ''; 
+		{	contents = data + '';
 			data.writeFile("Estimation Test.xlsm");
-			loaderCompleteHandlerString(contents);
+			MenuState.download_Finished = true;
+			//loaderCompleteHandlerString(contents);
 		}
 	}
 
-	private function loaderCompleteHandlerString(data:String):Void 
+	private function loaderCompleteHandlerString(data:String):Void
 	{	contents = data;
+		
 		if (this.onComplete != null)
 		{	onComplete(true, data);	}
 	}
 
-	private function loaderCompleteHandler(event:Event):Void 
+	private function loaderCompleteHandler(event:Event):Void
 	{	var data:ByteArray = cast(event.target, URLLoader).data;
 		loaderCompleteHandlerBytes(data);
 	}

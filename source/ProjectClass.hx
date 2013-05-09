@@ -10,7 +10,7 @@ class ProjectClass extends FlxGame
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 		
-		super(800, 400, MenuState, 1, 60, 60);
+		super(600, 300, MenuState, 1, 60, 60);
 		
 	}
 }

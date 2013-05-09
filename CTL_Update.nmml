@@ -2,10 +2,11 @@
 <project>
 	<app title="CTL_Update" file="CTL_Update" main="Main" version="0.0.1" company="Joel Forth" />
 	
-	<window width="800" height="400" fps="60" orientation="portrait" resizable="true" if="web" />
-	<window width="800" height="400" fps="60" orientation="landscape" fullscreen="false" unless="web" />
+	<window width="600" height="300" fps="60" orientation="portrait" resizable="true" if="web" />
+	<window width="600" height="300" fps="60" orientation="landscape" fullscreen="false" unless="web" />
  	
 	<set name="BUILD_DIR" value="export" />
+	<setenv name="no_console" value="1" />
 	
 	<!--<setenv name="no_console" value="1" />-->
 	
