@@ -18,10 +18,10 @@ class DynamicFile
 {	private var contents: String;
 	public var urlToLoad: String;
 	public var onComplete:Dynamic = null;
-	private var downloadType:Bool;
+	private var downloadType:Int;
 	
 
-	public function new(aUrl:String, _type:Bool)
+	public function new(aUrl:String, _type:Int)
 	{   contents = null;
 		
 		downloadType = _type;
@@ -45,7 +45,7 @@ class DynamicFile
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);
 			loader.load(request);
 		}
-			
+		
 		catch (unknown : Dynamic)
 		{	trace("Unknown exception: " + Std.string(unknown));
 			MenuState.an_error = true; }
@@ -58,16 +58,20 @@ class DynamicFile
 
 	private function loaderCompleteHandlerBytes(data:ByteArray):Void
 	{	
-		if (downloadType == false)
+		if (downloadType == 0)
 		{	contents = data + '';
 			data.writeFile("S_version.txt");
 			loaderCompleteHandlerString(contents);
 		}
-		else
+		else if (downloadType == 1)
 		{	contents = data + '';
 			data.writeFile("Estimation Package.xlsm");
 			MenuState.download_Finished = true;
 			//loaderCompleteHandlerString(contents);
+		}
+		else
+		{	contents = data + '';
+			data.writeFile("settings.ini");
 		}
 	}
 

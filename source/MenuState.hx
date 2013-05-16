@@ -43,6 +43,8 @@ class MenuState extends FlxState
 	
 	public var localVer:String;
 	public var serverVer:String;
+	public static var serverURL:String;
+	
 	
 	
 	override public function create():Void
@@ -52,14 +54,14 @@ class MenuState extends FlxState
 		logo = new FlxSprite(8, 8, "assets/sprites/Logo.png");
 		add(logo);
 		
-		//---------------------------------------------------------------------------Title
+		//--------------------------------------------------------------------------Title
 		Title_Est = new FlxSprite(272, 19, "assets/sprites/Title_Est.png");
 		Title_Upd = new FlxSprite(368, 55, "assets/sprites/Title_Upd.png");
 		add(Title_Est);
 		add(Title_Upd);
 		
 		
-		//---------------------------------------------------------------------------Loading Animation
+		//--------------------------------------------------------------------------Loading Animation
 		loading = new FlxSprite(281, 210, "assets/sprites/Loading.png");
 		add(loading);
 		loading_anim = new Loading_Anim(281, 210);
@@ -67,7 +69,7 @@ class MenuState extends FlxState
 		add(loading_anim);
 		
 		
-		//---------------------------------------------------------------------------Text labels
+		//--------------------------------------------------------------------------Text labels
 		txtLocalVer = new FlxText(200, 130, 130, "Your version: ", 8);
 		txtServerVer = new FlxText(320, 130, 130, "Server version: ", 8);
 		txtLocalVer.alignment = txtServerVer.alignment = "left";
@@ -97,7 +99,7 @@ class MenuState extends FlxState
 		txtChecking.alignment = txtDownloading.alignment = txtComplete.alignment = txtNoConnection.alignment = "center";
 		
 		
-		//---------------------------------------------------------------------------Buttons
+		//--------------------------------------------------------------------------Buttons
 		OK_Blank = new FlxSprite(200, 170, "assets/sprites/Button_blank.png");
 		add(OK_Blank);
 		OK_Button = new FlxButton(200, 170, "Get Update", do_update);
@@ -109,7 +111,7 @@ class MenuState extends FlxState
 		
 		fNameLocalVersion = "version.txt";
 		
-		//---------------------------------------------------------------------------Reading version.txt
+		//--------------------------------------------------------------------------Reading version.txt
 		var fileContent = File.getContent(fNameLocalVersion);
 		
 		if (fileContent == null)
@@ -119,8 +121,18 @@ class MenuState extends FlxState
 		
 		txtLocalVer.text += fileContent;
 		
-		//---------------------------------------------------------------------------Download S_version.txt
-		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/version.txt", false);
+		//--------------------------------------------------------------------------Loading Settings.ini
+		try
+		{	var fileContent2 = File.getContent("settings.ini");
+			serverURL = fileContent2;
+		}
+		
+		catch (unknown : Dynamic)
+		{	serverURL = "https://dl.dropboxusercontent.com/u/8876439/Estimation/";	}
+		
+		
+		//--------------------------------------------------------------------------Download S_version.txt
+		new DynamicFile(serverURL + "version.txt", 0);
 		
 	}
 	
@@ -143,7 +155,7 @@ class MenuState extends FlxState
 			
 			OK_Button.visible = true;
 			
-			var S_fileContent = File.getContent("S_version.txt");		//Check local S_version.txt
+			var S_fileContent = File.getContent("S_version.txt");					//Check local S_version.txt
 			serverVer = S_fileContent;
 			txtServerVer.text += S_fileContent;
 			txtChecking.visible = false;
@@ -156,7 +168,7 @@ class MenuState extends FlxState
 				CANCEL_Button.label.text = "- CLOSE -";
 			}
 			
-			var S_fout = File.write("S_version.txt", false);			//Empty the S_version.txt
+			var S_fout = File.write("S_version.txt", false);						//Empty the S_version.txt
 			S_fout.writeString("ERROR");
 			S_fout.close();
 		}
@@ -180,8 +192,8 @@ class MenuState extends FlxState
 	{	OK_Button.visible = false;
 		txtDownloading.visible = true;
 		loading_anim.visible = true;
-		
-		new DynamicFile("https://dl.dropboxusercontent.com/u/8876439/Estimation/Estimation%20Package.xlsm", true);
+		new DynamicFile(serverURL + "settings.ini", 2);							//Download latest settings.ini
+		new DynamicFile(serverURL + "Estimation%20Package.xlsm", 1);			//Download latest estimation package
 		
 	}
 	
